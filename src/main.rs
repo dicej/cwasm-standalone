@@ -2,7 +2,7 @@ use {
     anyhow::{anyhow, Result},
     clap::Parser,
     wasmtime::{Config, Engine, Linker, Module, Store},
-    wasmtime_wasi::{Dir, WasiCtx, WasiCtxBuilder},
+    wasmtime_wasi::{Dir, I32Exit, WasiCtx, WasiCtxBuilder},
 };
 
 fn parse_mapdir(s: &str) -> Result<(String, String)> {
@@ -72,7 +72,19 @@ fn main() -> Result<()> {
         .get_func(&mut store, "_start")
         .ok_or_else(|| anyhow!("unable to find `_start` function"))?;
 
-    start.call(&mut store, &[], &mut [])?;
+    start
+        .call(&mut store, &[], &mut [])
+        .or_else(ignore_successful_proc_exit_trap)?;
 
     Ok(())
+}
+
+fn ignore_successful_proc_exit_trap(guest_err: anyhow::Error) -> Result<()> {
+    match guest_err.root_cause().downcast_ref::<I32Exit>() {
+        Some(trap) => match trap.0 {
+            0 => Ok(()),
+            _ => Err(guest_err),
+        },
+        None => Err(guest_err),
+    }
 }
