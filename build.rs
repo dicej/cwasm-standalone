@@ -2,7 +2,6 @@ use {
     anyhow::Result,
     std::{env, fs, path::PathBuf, process::Command},
     wasmtime::{Config, Engine},
-    wit_component::ComponentEncoder,
 };
 
 fn main() -> Result<()> {
@@ -15,25 +14,10 @@ fn main() -> Result<()> {
         .status()?
         .success());
 
-    let adapter = &reqwest::blocking::get(
-        "https://github.com/bytecodealliance/wasmtime/releases/download/\
-         v13.0.0/wasi_snapshot_preview1.command.wasm",
-    )?
-    .error_for_status()?
-    .bytes()?;
+    let engine = &Engine::new(&Config::new())?;
 
-    let component = &ComponentEncoder::default()
-        .module(&fs::read(out_dir.join("wasm32-wasi/release/guest.wasm"))?)?
-        .validate(true)
-        .adapter("wasi_snapshot_preview1", adapter)?
-        .encode()?;
-
-    let mut config = Config::new();
-    config.wasm_component_model(true);
-
-    let engine = &Engine::new(&config)?;
-
-    let cwasm = engine.precompile_component(component)?;
+    let cwasm =
+        engine.precompile_module(&fs::read(out_dir.join("wasm32-wasi/release/guest.wasm"))?)?;
 
     fs::write(out_dir.join("wasm32-wasi/release/guest.cwasm"), cwasm)?;
 

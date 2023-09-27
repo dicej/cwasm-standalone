@@ -1,17 +1,8 @@
 use {
     anyhow::{anyhow, Result},
     clap::Parser,
-    wasmtime::{
-        component::{Component, Linker},
-        Config, Engine, Store,
-    },
-    wasmtime_wasi::{
-        preview2::{
-            command::{self, sync::Command},
-            DirPerms, FilePerms, Table, WasiCtx, WasiCtxBuilder, WasiView,
-        },
-        Dir,
-    },
+    wasmtime::{Config, Engine, Linker, Module, Store},
+    wasmtime_wasi::{Dir, WasiCtx, WasiCtxBuilder},
 };
 
 fn parse_mapdir(s: &str) -> Result<(String, String)> {
@@ -43,70 +34,45 @@ pub struct Options {
 
 struct Ctx {
     wasi: WasiCtx,
-    table: Table,
-}
-
-impl WasiView for Ctx {
-    fn ctx(&self) -> &WasiCtx {
-        &self.wasi
-    }
-    fn ctx_mut(&mut self) -> &mut WasiCtx {
-        &mut self.wasi
-    }
-    fn table(&self) -> &Table {
-        &self.table
-    }
-    fn table_mut(&mut self) -> &mut Table {
-        &mut self.table
-    }
 }
 
 fn main() -> Result<()> {
     let options = Options::parse();
 
-    let mut config = Config::new();
-    config.wasm_component_model(true);
+    let engine = &Engine::new(&Config::new())?;
 
-    let engine = &Engine::new(&config)?;
+    let mut linker = Linker::<Ctx>::new(engine);
+    wasmtime_wasi::add_to_linker(&mut linker, |ctx| &mut ctx.wasi)?;
 
-    let mut linker = Linker::new(engine);
-    command::sync::add_to_linker(&mut linker)?;
-
-    let mut table = Table::new();
     let mut wasi = WasiCtxBuilder::new();
     wasi.inherit_stdio();
 
     for (guest_dir, host_dir) in options.mapdir {
         wasi.preopened_dir(
             Dir::from_std_file(std::fs::File::open(host_dir)?),
-            DirPerms::all(),
-            FilePerms::all(),
             guest_dir,
-        );
+        )?;
     }
 
     for (name, value) in options.env {
-        wasi.env(name, value);
+        wasi.env(&name, &value)?;
     }
 
-    let wasi = wasi.build(&mut table)?;
-    let mut store = Store::new(engine, Ctx { wasi, table });
+    let wasi = wasi.build();
+    let mut store = Store::new(engine, Ctx { wasi });
 
-    let (command, _) = Command::instantiate(
-        &mut store,
-        &unsafe {
-            Component::deserialize(
-                engine,
-                include_bytes!(concat!(env!("OUT_DIR"), "/wasm32-wasi/release/guest.cwasm")),
-            )
-        }?,
-        &linker,
-    )?;
+    let instance = linker.instantiate(&mut store, &unsafe {
+        Module::deserialize(
+            engine,
+            include_bytes!(concat!(env!("OUT_DIR"), "/wasm32-wasi/release/guest.cwasm")),
+        )
+    }?)?;
 
-    command
-        .wasi_cli_run()
-        .call_run(&mut store)?
-        .map_err(|()| anyhow!("guest command returned error"))?;
+    let start = instance
+        .get_func(&mut store, "_start")
+        .ok_or_else(|| anyhow!("unable to find `_start` function"))?;
+
+    start.call(&mut store, &[], &mut [])?;
 
     Ok(())
 }

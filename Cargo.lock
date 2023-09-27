@@ -521,7 +521,6 @@ dependencies = [
  "reqwest",
  "wasmtime",
  "wasmtime-wasi",
- "wit-component",
 ]
 
 [[package]]
@@ -1627,15 +1626,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "spdx"
-version = "0.10.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b19b32ed6d899ab23174302ff105c1577e45a06b08d4fe0a9dd13ce804bbbf71"
-dependencies = [
- "smallvec",
-]
-
-[[package]]
 name = "sptr"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2052,21 +2042,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "34180c89672b3e4825c3a8db4b61a674f1447afd5fe2445b2d22c3d8b6ea086c"
 dependencies = [
  "leb128",
-]
-
-[[package]]
-name = "wasm-metadata"
-version = "0.10.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "577508d8a45bc54ad97efe77c95ba57bb10e7e5c5bac9c31295ce88b8045cd7d"
-dependencies = [
- "anyhow",
- "indexmap 2.0.0",
- "serde",
- "serde_json",
- "spdx",
- "wasm-encoder 0.33.2",
- "wasmparser 0.113.2",
 ]
 
 [[package]]
@@ -2644,24 +2619,6 @@ checksum = "357bb8e2932df531f83b052264b050b81ba0df90ee5a59b2d1d3949f344f81e5"
 dependencies = [
  "bitflags 2.4.0",
  "windows-sys",
-]
-
-[[package]]
-name = "wit-component"
-version = "0.14.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0477d36188eeba8e8f2579220ec385086f188de99453c6689814d4dad6a4c22c"
-dependencies = [
- "anyhow",
- "bitflags 2.4.0",
- "indexmap 2.0.0",
- "log",
- "serde",
- "serde_json",
- "wasm-encoder 0.33.2",
- "wasm-metadata",
- "wasmparser 0.113.2",
- "wit-parser",
 ]
 
 [[package]]
