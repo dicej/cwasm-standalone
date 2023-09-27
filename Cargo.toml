@@ -1,0 +1,16 @@
+[package]
+name = "cwasm-standalone"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.75"
+clap = { version = "4.4.5", features = ["derive"] }
+wasmtime = { version = "13.0.0", default-features = false, features = ["component-model"] }
+wasmtime-wasi = "13.0.0"
+
+[build-dependencies]
+anyhow = "1.0.75"
+reqwest = { version = "0.11.20", features = ["blocking"] }
+wasmtime = { version = "13.0.0", features = ["component-model"] }
+wit-component = "0.14.3"
