@@ -64,7 +64,7 @@ fn main() -> Result<()> {
     let instance = linker.instantiate(&mut store, &unsafe {
         Module::deserialize(
             engine,
-            include_bytes!(concat!(env!("OUT_DIR"), "/wasm32-wasi/release/guest.cwasm")),
+            include_bytes!("guest.cwasm"),
         )
     }?)?;
 
