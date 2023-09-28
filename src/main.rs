@@ -46,7 +46,7 @@ fn ignore_successful_proc_exit_trap(guest_err: anyhow::Error) -> Result<()> {
     }
 }
 
-fn run(guest: &Vec<u8>) -> Result<()> {
+fn run_internal(guest: &[u8]) -> Result<()> {
     let options = Options::parse();
 
     let engine = &Engine::new(&Config::new())?;
@@ -89,10 +89,22 @@ fn run(guest: &Vec<u8>) -> Result<()> {
     Ok(())
 }
 
+#[no_mangle]
+pub extern "C" fn run(guest: *const u8, len: usize) -> i32 {
+    let guest_slice: &[u8] = unsafe {
+        std::slice::from_raw_parts(guest, len)
+    };
+
+    match run_internal(guest_slice) {
+        Ok(_) => 0,
+        Err(_) => 1,
+    }
+}
+
 fn main() -> Result<()> {
     let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
 
-    run(&guest)?;
+    run_internal(&guest)?;
 
     Ok(())
 }
