@@ -111,6 +111,6 @@ fn main() -> Result<(), io::Error> {
 
     match result {
         0 => Ok(()),
-        _ => Err(io::Error::new(std::io::ErrorKind::Other, "Custom error")),
+        _ => Err(io::ErrorKind::Other.into()),
     }
 }
