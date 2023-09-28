@@ -1,9 +1,6 @@
 use {
-    anyhow::{anyhow, Result},
+    anyhow::{Result},
     std::io,
-    clap::Parser,
-    wasmtime::{Config, Engine, Linker, Module, Store},
-    wasmtime_wasi::{Dir, I32Exit, WasiCtx, WasiCtxBuilder},
     mylib::run_internal,
 };
 
@@ -14,7 +11,7 @@ extern "C" {
 fn main() -> Result<(), io::Error> {
     let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
 
-    let result = run_internal(&guest);
+    let _result = run_internal(&guest);
 
     Ok(())
     /*
