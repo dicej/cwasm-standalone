@@ -36,7 +36,7 @@ struct Ctx {
     wasi: WasiCtx,
 }
 
-fn run(guest: Vec<u8>) -> Result<()> {
+fn run(guest: &Vec<u8>) -> Result<()> {
     let options = Options::parse();
 
     let engine = &Engine::new(&Config::new())?;
@@ -82,7 +82,7 @@ fn run(guest: Vec<u8>) -> Result<()> {
 fn main() -> Result<()> {
     let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
 
-    run(guest)?;
+    run(&guest)?;
 
     Ok(())
 }
