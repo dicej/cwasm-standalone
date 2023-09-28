@@ -36,7 +36,7 @@ struct Ctx {
     wasi: WasiCtx,
 }
 
-fn main() -> Result<()> {
+fn run(guest: Vec<u8>) -> Result<()> {
     let options = Options::parse();
 
     let engine = &Engine::new(&Config::new())?;
@@ -61,13 +61,10 @@ fn main() -> Result<()> {
     let wasi = wasi.build();
     let mut store = Store::new(engine, Ctx { wasi });
 
-    let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
-    let guest2: Vec<u8> = guest.to_vec();
-
     let instance = linker.instantiate(&mut store, &unsafe {
         Module::deserialize(
             engine,
-            guest2,
+            guest,
         )
     }?)?;
 
@@ -78,6 +75,14 @@ fn main() -> Result<()> {
     start
         .call(&mut store, &[], &mut [])
         .or_else(ignore_successful_proc_exit_trap)?;
+
+    Ok(())
+}
+
+fn main() -> Result<()> {
+    let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
+
+    run(guest)?;
 
     Ok(())
 }
