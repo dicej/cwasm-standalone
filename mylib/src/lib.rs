@@ -46,7 +46,7 @@ fn ignore_successful_proc_exit_trap(guest_err: anyhow::Error) -> Result<()> {
     }
 }
 
-fn run_internal(guest: &[u8]) -> Result<()> {
+pub fn run_internal(guest: &[u8]) -> Result<()> {
     let options = Options::parse();
 
     let engine = &Engine::new(&Config::new())?;
