@@ -61,10 +61,12 @@ fn main() -> Result<()> {
     let wasi = wasi.build();
     let mut store = Store::new(engine, Ctx { wasi });
 
+    let guest: &'static [u8; 67976] = include_bytes!("guest.cwasm");
+
     let instance = linker.instantiate(&mut store, &unsafe {
         Module::deserialize(
             engine,
-            include_bytes!("guest.cwasm"),
+            guest,
         )
     }?)?;
 
