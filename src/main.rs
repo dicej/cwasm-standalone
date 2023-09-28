@@ -91,7 +91,7 @@ fn run_internal(guest: &[u8]) -> Result<()> {
 }
 
 #[no_mangle]
-pub extern "C" fn run(guest: *const u8, len: usize) -> i32 {
+pub extern "C" fn run(len: usize, guest: *const u8) -> i32 {
     let guest_slice: &[u8] = unsafe {
         std::slice::from_raw_parts(guest, len)
     };
@@ -107,7 +107,7 @@ fn main() -> Result<(), io::Error> {
 
     //run_internal(&guest)?;
 
-    let result: i32 = run(guest.as_ptr(), guest.len());
+    let result: i32 = run(guest.len(), guest.as_ptr());
 
     match result {
         0 => Ok(()),
