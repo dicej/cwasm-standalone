@@ -518,7 +518,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
- "mylib",
  "reqwest",
  "wasmtime",
  "wasmtime-wasi",
@@ -1150,17 +1149,6 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys",
-]
-
-[[package]]
-name = "mylib"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "reqwest",
- "wasmtime",
- "wasmtime-wasi",
 ]
 
 [[package]]

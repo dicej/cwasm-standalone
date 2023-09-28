@@ -1,9 +1,9 @@
 use {
     anyhow::{Result},
     std::io,
-    mylib,
 };
 
+#[link(name = "mylib", kind = "static")]
 extern "C" {
     fn run1234(len: usize, guest: *const u8) -> i32;
 }
