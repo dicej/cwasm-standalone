@@ -16,6 +16,3 @@ path = "mylib"
 anyhow = "1.0.75"
 reqwest = { version = "0.11.20", features = ["blocking"] }
 wasmtime = { version = "13.0.0" }
-
-[lib]
-crate-type = ["staticlib"]
