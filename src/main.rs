@@ -11,10 +11,10 @@ extern "C" {
     fn run1234(len: usize, guest: *const u8) -> i32;
 }
 
-fn main() -> Result<()> {
+fn main() -> Result<(), io::Error> {
     let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
 
-    run_internal(&guest)?;
+    let result = run_internal(&guest);
 
     Ok(())
     /*
