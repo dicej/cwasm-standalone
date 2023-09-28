@@ -24,7 +24,7 @@ fn parse_env(s: &str) -> Result<(String, String)> {
 }
 
 #[derive(Parser)]
-pub struct Options {
+struct Options {
     #[clap(long, value_name = "GUEST_DIR::HOST_DIR", value_parser = parse_mapdir)]
     mapdir: Vec<(String, String)>,
 
@@ -46,7 +46,7 @@ fn ignore_successful_proc_exit_trap(guest_err: anyhow::Error) -> Result<()> {
     }
 }
 
-pub fn run_internal(guest: &[u8]) -> Result<()> {
+fn run_internal(guest: &[u8]) -> Result<()> {
     let options = Options::parse();
 
     let engine = &Engine::new(&Config::new())?;
