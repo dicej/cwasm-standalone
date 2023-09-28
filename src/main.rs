@@ -1,7 +1,7 @@
 use {
     anyhow::{Result},
     std::io,
-    mylib::run_internal,
+    mylib,
 };
 
 extern "C" {
