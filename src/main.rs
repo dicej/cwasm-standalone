@@ -6,7 +6,6 @@ use {
     wasmtime_wasi::{Dir, I32Exit, WasiCtx, WasiCtxBuilder},
 };
 
-#[no_mangle]
 extern "C" {
     fn run1234(len: usize, guest: *const u8) -> i32;
 }
