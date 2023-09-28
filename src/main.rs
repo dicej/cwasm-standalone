@@ -36,6 +36,16 @@ struct Ctx {
     wasi: WasiCtx,
 }
 
+fn ignore_successful_proc_exit_trap(guest_err: anyhow::Error) -> Result<()> {
+    match guest_err.root_cause().downcast_ref::<I32Exit>() {
+        Some(trap) => match trap.0 {
+            0 => Ok(()),
+            _ => Err(guest_err),
+        },
+        None => Err(guest_err),
+    }
+}
+
 fn run(guest: &Vec<u8>) -> Result<()> {
     let options = Options::parse();
 
@@ -85,14 +95,4 @@ fn main() -> Result<()> {
     run(&guest)?;
 
     Ok(())
-}
-
-fn ignore_successful_proc_exit_trap(guest_err: anyhow::Error) -> Result<()> {
-    match guest_err.root_cause().downcast_ref::<I32Exit>() {
-        Some(trap) => match trap.0 {
-            0 => Ok(()),
-            _ => Err(guest_err),
-        },
-        None => Err(guest_err),
-    }
 }
