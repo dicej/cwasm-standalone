@@ -1,5 +1,6 @@
 use {
     anyhow::{anyhow, Result},
+    std::io,
     clap::Parser,
     wasmtime::{Config, Engine, Linker, Module, Store},
     wasmtime_wasi::{Dir, I32Exit, WasiCtx, WasiCtxBuilder},
@@ -101,10 +102,15 @@ pub extern "C" fn run(guest: *const u8, len: usize) -> i32 {
     }
 }
 
-fn main() -> Result<()> {
+fn main() -> Result<(), io::Error> {
     let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
 
-    run_internal(&guest)?;
+    //run_internal(&guest)?;
 
-    Ok(())
+    let result: i32 = run(guest.as_ptr(), guest.len());
+
+    match result {
+        0 => Ok(()),
+        _ => Err(io::Error::new(std::io::ErrorKind::Other, "Custom error")),
+    }
 }
