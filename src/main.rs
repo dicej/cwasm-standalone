@@ -11,10 +11,11 @@ extern "C" {
 fn main() -> Result<(), io::Error> {
     let guest: Vec<u8> = include_bytes!("guest.cwasm").to_vec();
 
+    /*
     let _result = run_internal(&guest);
 
     Ok(())
-    /*
+    */
     let result: i32 = unsafe {
         run1234(guest.len(), guest.as_ptr())
     };
@@ -23,5 +24,4 @@ fn main() -> Result<(), io::Error> {
         0 => Ok(()),
         _ => Err(io::ErrorKind::Other.into()),
     }
-    */
 }
