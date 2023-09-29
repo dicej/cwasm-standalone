@@ -1,6 +1,4 @@
-use {
-    std::io,
-};
+use std::io;
 
 extern "C" {
     fn run1234(len: usize, guest: *const u8) -> i32;
