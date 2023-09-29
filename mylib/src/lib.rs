@@ -90,7 +90,7 @@ fn run_internal(guest: &[u8]) -> Result<()> {
 }
 
 #[no_mangle]
-pub extern "C" fn run1234(len: usize, guest: *const u8) -> i32 {
+pub extern "C" fn run_wasm_native_binary(len: usize, guest: *const u8) -> i32 {
     let guest_slice: &[u8] = unsafe {
         std::slice::from_raw_parts(guest, len)
     };
