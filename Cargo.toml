@@ -4,9 +4,3 @@ version = "0.1.0"
 edition = "2021"
 links = "mylib"
 build = "build.rs"
-
-[dependencies]
-anyhow = "1.0.75"
-
-[build-dependencies]
-anyhow = "1.0.75"
