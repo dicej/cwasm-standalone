@@ -11,9 +11,14 @@ cd mylib
 cargo build --offline
 cd ..
 
+strip mylib/target/debug/libmylib.a
+
 cargo run --offline
 
 bin2c guest < src/guest.cwasm > guest.c
 clang -c guest.c -o guest.o
 clang -c driver.c -o driver.o
 clang -o driver driver.o guest.o mylib/target/debug/libmylib.a
+ls -h driver
+strip driver
+ls -h driver
