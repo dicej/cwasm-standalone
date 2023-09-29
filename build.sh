@@ -7,4 +7,8 @@ lfortran $HOME/repos/lfortran/lfortran/examples/expr2.f90 --backend=wasm -o gues
 wasmtime compile guest.wasm -o guest.cwasm
 cd ..
 
-cargo run
+cd mylib
+cargo build --offline
+cd ..
+
+cargo run --offline
